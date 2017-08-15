@@ -18,6 +18,7 @@ services:
       MYSQL_USER: magento_test
       MYSQL_DATABASE: magento_test
       MYSQL_PASSWORD: magento_test
+      #mysql -hdb -umagento_test -pmagento_test
       MYSQL_ROOT_PASSWORD: magento_root
     volumes:
     - .././build/data/mysql:/var/lib/mysql
