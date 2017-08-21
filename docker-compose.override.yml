@@ -1,0 +1,6 @@
+---
+version: "2"
+services:
+  php:
+    volumes:
+    - ./mount/web:/var/www/html
