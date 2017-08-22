@@ -2,5 +2,7 @@
 version: "2"
 services:
   php:
+    build:
+        dockerfile: Dockerfile
     volumes:
     - ./mount/web:/var/www/html

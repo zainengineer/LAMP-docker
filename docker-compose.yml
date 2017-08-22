@@ -3,7 +3,7 @@ version: "2"
 services:
   php:
     build:
-      dockerfile: Dockerfile
+      dockerfile: DockerOverridefile
       context: .
     depends_on:
     - db
