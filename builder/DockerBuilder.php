@@ -9,12 +9,20 @@ Class DockerBuilder
     protected $_bListIps = false;
     protected $_vOverRidePath;
     protected $_vRelativePath;
+    protected $_aCustomConfig = [];
 
     public function __construct()
     {
         $this->configure();
     }
 
+    protected function getCustomConfig()
+    {
+        $vPath = $this->getOverRidePath() . '/config.json';
+        if (file_exists($vPath)) {
+            $this->_aCustomConfig = @json_decode(file_get_contents($vPath),true) ?: [];
+        }
+    }
     protected function configure()
     {
         $aShortMap = [
@@ -35,6 +43,8 @@ Class DockerBuilder
                 $this->$variable = ($aOptions[$key] == '1');
             }
         }
+        //needs to be at the end otherwise _bOverride param does not work
+        $this->getCustomConfig();
     }
 
     protected function getProjectName()
@@ -180,7 +190,7 @@ Class DockerBuilder
 
     protected function DockerFrom()
     {
-        return '';
+        return isset($this->_aCustomConfig['from'])? $this->_aCustomConfig['from']:  '';
     }
 
     protected function getExistingDockerContent()
@@ -191,10 +201,11 @@ Class DockerBuilder
     {
         if ($this->_bOverride){
             $vOverRidePath = $this->getOverRidePath() . '/docker-compose.yml';
+            $vRepoPath = $this->getDockerRepoPath() .'/docker-compose.yml';
             if (file_exists($vOverRidePath)){
                 unlink($vOverRidePath);
             }
-            symlink($this->getDockerRepoPath() .'/docker-compose.yml',$vOverRidePath);
+            symlink($vRepoPath,$vOverRidePath);
         }
     }
 
