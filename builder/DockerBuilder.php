@@ -3,6 +3,7 @@
 Class DockerBuilder
 {
     protected $_bDaemon = false;
+    protected $_bSudo = false;
     protected $_bBuild = false;
     protected $_bOverride = false;
     protected $_bCompose = false;
@@ -31,6 +32,7 @@ Class DockerBuilder
             'o' => '_bOverride',
             'c' => '_bCompose',
             'l' => '_bListIps',
+            's' => '_bSudo',
         ];
         $vOptions = implode(":",array_keys($aShortMap)) . ":";
         $aOptions = getopt($vOptions);
@@ -92,6 +94,7 @@ Class DockerBuilder
         $vComposeOverridePath = $this->getDockerComposeOverridePath();
         $aParts = [
             //            'cd' => "cd $vRepoPath &&",
+            'sudo'         => 'sudo',
             'compose'      => 'docker-compose',
             'main-yml'     => "-f $vComposePath",
             'override-yml' => "-f $vComposeOverridePath",
@@ -103,6 +106,9 @@ Class DockerBuilder
         ];
         if (!$this->_bDaemon) {
             unset($aParts['daemon']);
+        }
+        if (!$this->_bSudo) {
+            unset($aParts['sudo']);
         }
         if (!$this->_bBuild) {
             unset($aParts['build']);
