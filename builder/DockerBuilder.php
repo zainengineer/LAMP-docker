@@ -198,6 +198,10 @@ Class DockerBuilder
     {
         return isset($this->_aCustomConfig['from'])? $this->_aCustomConfig['from']:  '';
     }
+    protected function getIpMap()
+    {
+        return isset($this->_aCustomConfig['ip_map'])? $this->_aCustomConfig['ip_map']:  [];
+    }
 
     protected function getExistingDockerContent()
     {
@@ -220,12 +224,57 @@ Class DockerBuilder
         $this->createSymLink();
         return implode(' ', $this->getCommandParts());
     }
-    protected function getIpListCommand()
+
+    protected function getIpListCommandRaw()
     {
         $vOverRidePath = $this->getOverRidePath();
         $vOutput = "cd {$vOverRidePath} \n";
-        $vOutput .= file_get_contents(dirname(dirname(__FILE__)) . '/util/list_ips.sh');
+        $vOutput .= file_get_contents($this->ipScriptPath());
         return $vOutput;
+    }
+
+    protected function ipScriptPath()
+    {
+        return dirname(dirname(__FILE__)) . '/util/list_ips.sh';
+    }
+
+    protected function getIpListCommand()
+    {
+        $vReturn = $this->getIpListCommandRaw();
+        if ($aIpMap = $this->getIpMap()) {
+            $vOutput = $this->getIpOutput();
+            $vFriendly = $this->convertIpOutputToFriendly($vOutput, $aIpMap);
+            $vReturn .= "\n$vFriendly";
+        }
+        return $vReturn;
+    }
+
+    protected function convertIpOutputToFriendly($vOutput, $aIpMap)
+    {
+        $vOutput = str_replace(['ip of /', ' is'], '', $vOutput);
+        $aRows = explode("\n", $vOutput);
+        $vFriendly = "";
+        foreach ($aRows as $vRow) {
+            $vRow = trim($vRow);
+            $aParts = explode(' ', $vRow);
+            $vMachine = @$aParts[0];
+            if (isset($aIpMap[$vMachine])) {
+                $vDomain = $aIpMap[$vMachine];
+                $vIp = trim(@$aParts[1]);
+                $vFriendly .= "echo $vIp $vDomain\n";
+            }
+        }
+        return $vFriendly;
+    }
+
+    protected function getIpOutput()
+    {
+        $vCurrentDir = getcwd();
+        chdir($this->getOverRidePath());
+        $cmd = 'bash ' . $this->ipScriptPath();
+        $output = shell_exec($cmd);
+        chdir($vCurrentDir);
+        return $output;
     }
     public function executeAction()
     {
