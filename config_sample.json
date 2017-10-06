@@ -1,3 +1,18 @@
 {
-  "from": "php:5.5-apache"
+  "from": "php:7.1-apache",
+  "ip_map": {
+    "toggldocker_db_1": "docker.toggl-db.dev",
+    "toggldocker_php_1": "local.togglg.dev",
+    "toggldocker_redis_1": "docker.toggl-redis.dev"
+  },
+  "append": {
+    "lines": [
+      "RUN sed -ri -e 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/sites-available/*.conf",
+      "RUN sed -ri -e 's!/var/www/!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/apache2.conf /etc/apache2/conf-available/*.conf",
+      "RUN docker-php-ext-install zip"
+    ]
+  },
+  "replace": {
+    "pdo_mysql mysql mysqli ": ""
+  }
 }
