@@ -1,9 +1,9 @@
 {
   "from": "php:7.1-apache",
   "ip_map": {
-    "toggldocker_db_1": "docker.toggl-db.dev",
-    "toggldocker_php_1": "local.togglg.dev",
-    "toggldocker_redis_1": "docker.toggl-redis.dev"
+    "toggldocker_db_1": "docker.toggl-db.test",
+    "toggldocker_php_1": "local.togglg.test",
+    "toggldocker_redis_1": "docker.toggl-redis.test"
   },
   "append": {
     "lines": [
