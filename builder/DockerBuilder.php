@@ -95,7 +95,7 @@ Class DockerBuilder
         $aParts = [
             //            'cd' => "cd $vRepoPath &&",
             'sudo'         => 'sudo',
-            'compose'      => 'docker-compose',
+            'compose'      => '/usr/local/bin/docker-compose',
             'main-yml'     => "-f $vComposePath",
             'override-yml' => "-f $vComposeOverridePath",
             'project-path' => "--project-directory $vOverRidePath",
