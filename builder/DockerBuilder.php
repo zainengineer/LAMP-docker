@@ -95,7 +95,7 @@ Class DockerBuilder
         $aParts = [
             //            'cd' => "cd $vRepoPath &&",
             'sudo'         => 'sudo',
-            'compose'      => 'docker-compose',
+            'compose'      => '/usr/local/bin/docker-compose',
             'main-yml'     => "-f $vComposePath",
             'override-yml' => "-f $vComposeOverridePath",
             'project-path' => "--project-directory $vOverRidePath",
@@ -190,8 +190,30 @@ Class DockerBuilder
             $aPartsCopy[] = $vPart;
         }
         $vNewContent = implode("\n", $aPartsCopy);
+        $vNewContent = $this->replaceString($vNewContent);
+        $vNewContent .= $this->dockerAdditionalLines();
         $vNewContent .= "\n";
         return $vNewContent;
+    }
+    protected function replaceString($vContent)
+    {
+        $aReplaceMap = $this->getReplaceMap();
+        if (!$aReplaceMap){
+            return $vContent;
+        }
+        return str_replace(array_keys($aReplaceMap),$aReplaceMap,$vContent);
+    }
+    protected function getReplaceMap()
+    {
+        return isset($this->_aCustomConfig['replace']) ? $this->_aCustomConfig['replace']:  [];
+    }
+    protected function dockerAdditionalLines()
+    {
+        $aAppend = isset($this->_aCustomConfig['append'])? $this->_aCustomConfig['append']:  [];
+        $aLines = empty($aAppend['lines']) ? [] : $aAppend['lines'];
+        $aLines = is_array($aLines) ? $aLines : [];
+        $vLines =  implode("\n", $aLines);
+        return $vLines ? "\n" . $vLines : false;
     }
 
     protected function DockerFrom()
