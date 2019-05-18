@@ -20,3 +20,7 @@ services:
       MYSQL_ROOT_PASSWORD: magento_root_pass
     volumes:
     - ./build/data/mysql:/var/lib/mysql
+  cache:
+    image: redis
+  session:
+    image: redis
