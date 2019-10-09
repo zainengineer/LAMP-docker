@@ -3,6 +3,7 @@
     sudo wget -qO- https://get.docker.com/ | sh
     sudo yum install docker-compose
     sudo systemctl enable docker
+    sudo systemctl start docker
  
  ### alternative docker-compose via pip
  
