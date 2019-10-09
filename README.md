@@ -1,6 +1,11 @@
 ## installing Docker
 
-* `sudo wget -qO- https://get.docker.com/ | sh`
+  sudo wget -qO- https://get.docker.com/ | sh
+  sudo yum install docker-compose
+  sudo systemctl enable docker
+ 
+ ### alternative docker-compose via pip
+ 
 * `docker-compose` needs pip, on centos `sudo yum install python-pip`
 * `sudo pip install docker-compose`
 * `sudo service docker restart`
